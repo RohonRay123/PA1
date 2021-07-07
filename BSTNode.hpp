@@ -13,12 +13,20 @@ class BSTNode {
 		 *  no parent, and no children.
 		 *  TODO
 		 */
-		BSTNode(const Data & d) {}
+		BSTNode(const Data & d):left(0),right(0),parent(0),data(d) {
+			//data=d;
+			//left=0;
+			//right=0;
+			//parent=0;
+		  //left=right=parent=NULL; 
+		}
+
 
 		BSTNode<Data>* left;
 		BSTNode<Data>* right;
 		BSTNode<Data>* parent;
 		Data const data;   // the const Data in this node.
+		
 
 		/** Return the successor of this BSTNode in a BST, or 0 if none.
 		 *  PRECONDITION: this BSTNode is a node in a BST.
@@ -27,6 +35,45 @@ class BSTNode {
 		 *  or 0 if there is none. TODO
 		 */
 		BSTNode<Data>* successor() {
+			BSTNode<Data>* a=right;
+			//int counter=0;
+			if(a!=0)
+			{
+			  BSTNode<Data>* b=a->left;
+			  if(!(b!=0))
+			  {
+				  return a;
+			  }
+			  while(b!=0)
+			  {
+                BSTNode<Data>* c=b->left;
+				if(c!=0)
+				{
+					b=c;
+				}
+				else
+				{
+					return b;
+				}
+			  }
+			  //return b;
+			}
+			else 
+			{
+				BSTNode<Data>* parentNode=parent;
+				BSTNode<Data>* childnode=this;
+				while(parentNode!=0)
+				{
+				  if( parentNode->left==childnode)
+				  {
+					  return parentNode;
+				  }
+				  //BSTNode<Data>* temp=childNode;
+				  childnode=parentNode;
+				  parentNode=parentNode->parent;
+				}
+
+			}
 			return 0;
 		}
 
