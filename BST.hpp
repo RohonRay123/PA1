@@ -14,7 +14,7 @@ class BST {
       BSTNode<Data>* root;
 
       /** Number of Data items stored in this BST. */
-      unsigned int isize;
+      unsigned int isize; 
 
       /** Height of this BST. */
       unsigned int iheight;
@@ -28,7 +28,6 @@ class BST {
         * Initialize an empty BST.
         */
       BST() : root(0), isize(0), iheight(-1) {  }
-
 
       /** Default destructor.
         * Delete every node in this BST.
@@ -47,9 +46,68 @@ class BST {
        *  TODO
        */
       virtual bool insert(const Data& item) {
+         
+               if(root==0)
+               {
+                  root=new BSTNode<Data>(item);
+                  isize++;
+                  iheight++;
+                  return true;
+               }
+               else
+               {
+                  BSTNode<Data>* currentPointer=root;
+                  int counter=0;
+                  while(currentPointer!=0)
+                  {
+                     if(currentPointer->data < item)
+                     {
+                        //currentPointer=currentPointer->right;
+                        if(currentPointer->right==NULL)
+                        {
+                           currentPointer->right=new BSTNode<Data>(item);
+                           BSTNode<Data>* temp=currentPointer->right;
+                           temp->parent=currentPointer;
+                           counter++;
+                           isize++;
+                           if(counter> iheight)
+                           {
+                              iheight=counter;
+                           }
+                           return true;
+                        }
+                        currentPointer=currentPointer->right;
+                        
+                     }
+                      else if(item < currentPointer->data)
+                     {
+                        // currentPointer=currentPointer->left;
+                        if(currentPointer->left==NULL)
+                        {
+                           currentPointer->left=new BSTNode<Data>(item);
+                           BSTNode<Data>* temp=currentPointer->left;
+                           temp->parent=currentPointer;
+                           counter++;
+                           isize++;
+                           if(counter> iheight)
+                           {
+                              iheight=counter;
+                           }
+                           return true;
+                        }
+                        currentPointer=currentPointer->left;
+                     }
+                     else
+                     {
+                        return false;
+                     }
+                     counter++;
+                  }
+                  return true;
+               }
+         
          return false;
       }
-
 
       /** Find a Data item in the BST.
        *  Return an iterator pointing to the item, or pointing past
@@ -60,15 +118,31 @@ class BST {
        *  TODO
        */
       virtual iterator find(const Data& item) const {
+         BSTNode<Data>* currentNode=root;
+         while(currentNode != 0)
+         {
+            if(currentNode->data < item)
+            {
+               currentNode=currentNode->right;
+            }
+            else if(item < currentNode->data)
+            {
+               currentNode=currentNode->left;
+            }
+            else
+            {
+               return BST::iterator(currentNode);
+            }
+         }
+
          return 0; 
       }
-
 
       /** Return the number of items currently in the BST.
        *  TODO 
        */
       unsigned int size() const {
-         return 0;
+         return isize;
       }
 
       /** Return the height of the BST.
@@ -77,9 +151,8 @@ class BST {
        *  TODO  
        */
       unsigned int height() const {
-         return 0;
+         return iheight;
       }
-
 
       /** Return true if the BST is empty, else false.
        */
@@ -99,7 +172,6 @@ class BST {
          return typename BST<Data>::iterator(0);
       }
 
-
       /** Inorder traverse BST, print out the data of each node in ascending order.
        * Implementing inorder and deleteAll base on the pseudo code is an easy way to get started.
        * Pseudo Code:
@@ -110,20 +182,48 @@ class BST {
        * TODO
        */
       void inorder() const {
+         inorder(root);
       }
-
+   
 
    private:
+
+     void inorder(BSTNode<Data>* n) const
+     {
+        if(n!=0)
+        {
+           inorder(n->left);
+           cout<< n->data << endl;
+           inorder(n->right);
+           
+        }
+        else
+        {
+           return;
+        }
+     }
 
       /** Find the first element of the BST
        *  TODO 
        */ 
       static BSTNode<Data>* first(BSTNode<Data>* root) {
+         BSTNode<Data>* tracker=root;
+         while(tracker != NULL)
+         {
+            if(tracker->left!=0)
+            {
+               tracker=tracker->left;
+            }
+            else
+            {
+               return tracker;
+            }
+         }
          return 0;
       }
 
       /** do a postorder traversal, deleting nodes
-       *   TODO 	
+       *   TODO   
        */
       static void deleteAll(BSTNode<Data>* n) {
          /* Pseudo Code:
@@ -132,10 +232,21 @@ class BST {
             recursively delete right sub-tree
             delete current node
             */
+           if(n!=0)
+           {
+              deleteAll(n->left);
+              deleteAll(n->right);
+              delete n;
+           }
+           else
+           {
+              return;
+           }
+
+         
+
       }
 
-
 };
-
 
 #endif //BST_HPP
